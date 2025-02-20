@@ -42,7 +42,7 @@ void ShoppingCart::recalculateTotal() {
 
 void ShoppingCart::addItem(std::string name, float price, int quantity) {
   if (price < 0 || quantity < 0) {
-    throw logic_error ("Shit can't be negative");
+    throw logic_error("Shit can't be negative");
     return;
   }
 
@@ -53,18 +53,25 @@ void ShoppingCart::addItem(std::string name, float price, int quantity) {
 
 void ShoppingCart::updateItemQuantity(std::string name, int quantity) {
   if (quantity < 0) {
-    throw logic_error ("shit can't be less than zero");
+    throw logic_error("shit can't be less than zero");
     return;
   }
-  for (auto &item : items) {
-    if (item->getName() == name) {
-      item->setQuantity(quantity);
+  for (size_t i = 0; i < items.size(); i++) {
+    if (items[i]->getName() == name) {
+      if (quantity == 0) {
+        delete items[i];
+        items.erase(items.begin() + i);
+
+      } else {
+        items[i]->setQuantity(quantity);
+      }
+
       recalculateTotal();
       return;
     }
   }
 
-  cout << "Shit ain't in the cart" << endl;
+  throw logic_error("Shit ain't in the cart");
 }
 
 void ShoppingCart::removeAll() {
