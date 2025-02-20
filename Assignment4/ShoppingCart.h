@@ -12,8 +12,6 @@ class ShoppingCart {
     float tax;
     float total;
 
-    void recalculateTotal();
-
 public:
     // public constructor
     ShoppingCart();
