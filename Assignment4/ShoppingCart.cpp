@@ -31,14 +31,6 @@ void ShoppingCart::print() {
   cout << "=========================" << endl;
 }
 
-void ShoppingCart::recalculateTotal() {
-  subtotal = 0.0;
-  for (const auto &item : items) {
-    subtotal += item->getPrice() * item->getQuantity();
-  }
-  tax = subtotal * 0.0825;
-  total = subtotal + tax;
-}
 
 void ShoppingCart::addItem(std::string name, float price, int quantity) {
   if (price < 0 || quantity < 0) {
@@ -48,7 +40,10 @@ void ShoppingCart::addItem(std::string name, float price, int quantity) {
 
   GroceryItem *newItem = new GroceryItem(name, price, quantity);
   items.push_back(newItem);
-  recalculateTotal();
+
+  subtotal += price * quantity;
+  tax = subtotal * 0.0825;
+  total = subtotal + tax;
 }
 
 void ShoppingCart::updateItemQuantity(std::string name, int quantity) {
@@ -58,6 +53,7 @@ void ShoppingCart::updateItemQuantity(std::string name, int quantity) {
   }
   for (size_t i = 0; i < items.size(); i++) {
     if (items[i]->getName() == name) {
+        float oldSubtotal = items[i]->getPrice() * items[i]->getQuantity();
       if (quantity == 0) {
         delete items[i];
         items.erase(items.begin() + i);
@@ -65,8 +61,11 @@ void ShoppingCart::updateItemQuantity(std::string name, int quantity) {
       } else {
         items[i]->setQuantity(quantity);
       }
+        subtotal -= oldSubtotal;
+        subtotal += items[i]->getPrice() * quantity;
+        tax = subtotal * 0.0825;
+        total = subtotal + tax;
 
-      recalculateTotal();
       return;
     }
   }
